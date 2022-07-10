@@ -144,7 +144,7 @@ void IngameRank::openScoreboard(std::string eventName) {
 	if (mutators_center < center.X && mutators) center.X = mutators_center;
 	center.X -= isReplaying * SKIP_TICK_SHIFT * scale * uiScale;
 	int team_difference = num_blues - num_oranges;
-	center.Y += IMBALANCE_SHIFT * (team_difference - ((num_blues == 0) != (num_oranges == 0)) * (team_difference >= 0 ? 1 : -1));
+	center.Y += IMBALANCE_SHIFT * (team_difference - ((num_blues == 0) != (num_oranges == 0)) * (team_difference >= 0 ? 1 : -1)) * scale * uiScale;
 
 	image_scale = 0.48f;
 	float tier_X = -SCOREBOARD_LEFT - IMAGE_WIDTH * image_scale;
