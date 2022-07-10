@@ -1,0 +1,15 @@
+Ingame Rank
+1|Enable Plugin|ingamerank_enabled
+1|Show Division|ingamerank_show_division
+1|Show Playlist|ingamerank_show_playlist
+8
+9|Playlist
+7
+6||ingamerank_playlist|Best@0&Solo Duel@10&Doubles@11&Standard@13&Rumble@28&Hoops@27&Dropshot@29&Snow Day@30&Tournaments@34
+1|Include Extra Modes|ingamerank_include_extramodes
+1|Include Tournaments|ingamerank_include_tournaments
+1|Calculate Unranked Ranks (only Solo, Doubles and Standard)|ingamerank_calculate_unranked
+1|Auto Playlist|ingamerank_autoplaylist
+8
+9|Cycle playlist with "F8" or change it in the console with
+9|bind <key> ingamerank_cycleplaylist
