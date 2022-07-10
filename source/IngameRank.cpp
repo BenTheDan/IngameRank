@@ -90,7 +90,7 @@ void IngameRank::onLoad() {
 	//First launch condition
 	if (std::filesystem::exists(dataFolder / "FIRST_LAUNCH.file")) {
 		cvarManager->log("FirstLaunch");
-		cvarManager->setBind("P", "ingamerank_cycleplaylist");
+		cvarManager->setBind("F8", "ingamerank_cycleplaylist");
 		std::filesystem::remove(dataFolder / "FIRST_LAUNCH.file");
 	}
 }
