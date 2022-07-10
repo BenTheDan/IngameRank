@@ -1,0 +1,42 @@
+- The scoreboard’s center is relative to the center of the screen (by default its the same, but it can shift).
+- All the constants in the code are based on a screen size of 1920x1080
+- Almost every offset is multiplied by the UIScale and a special scale variable (I’ll refer to it as scale)
+
+
+Calculating scale:
+	Scoreboard width / scoreboard height is always constant so the scale is the same for both x and y
+	If screensize.x / screensize.y is bigger than 1.5:
+		in this case the scoreboard's height with 4 players on each team is 0.507 * the screen height so
+		scale relative to 1920*1080 is screensize.y*0.507 / SCOREBOARD_HEIGHT
+	else:
+		in this case the scoreboard's width is 0.615 * the screen width so
+		scale relative to 1920*1080 is screensize.x*0.615 / SCOREBOARD_WIDTH
+		
+
+- The center of the scoreboard is shifted vertically when the team sizes aren't equal
+This can be calculated like:
+	shift_multiplier = number of blues - number of oranges
+	if any of the teams has 0 members the shift_multiplier gets 1 closer to 0
+	
+	shift_in_pixels = IMBALANCE_SHIFT * shift_multiplier * scale*uiscale
+	shift_in_pixels is than added to screencenter.y
+
+
+- The center can also shift horizontally when mutators are active
+I'm not really sure about this part but the code does it like this:
+center_with_mutators = screensize.x - (SCOREBOARD_RIGHT + MUTATOR_WIDTH) * scale*uiscale
+	(Since my plugin doesn't work in private matches, only tournaments have mutators which is always the 11 minute thingy,
+	so MUTATOR_WIDTH is always the same and than so is SCOREBOARD_RIGHT + MUTATOR_WIDTH (1005 in the plugin))
+if the center_width_mutators.x is smaller than the original center.x (so closer to the left of the screen) than it
+becomes the center otherwise it stays the original
+
+constants:
+	SCOREBOARD_LEFT(537) - the distance of the leftmost pixel of the scoreboard from the center
+	SCOREBOARD_RIGHT(527) - the distance of the rightmost pixel of the scoreboard from the center
+	BLUE_BOTTOM(77) - The distance of the bottom of the blue part from the center
+	ORANGE_TOP(32) - The distance top of the orange part from the center
+	BANNER_DISTANCE(57) - The distance from the bottom of a player's stats banner to the bottom of the next one
+	SCOREBOARD_HEIGHT(548) - The height of the scoreboard in pixels with 1920x1080 screen size and 4 players on each team
+	SCOREBOARD_WIDTH(1033) - The width of the scoreboard in pixels with 1920x1080 screen size
+	IMBALANCE_SHIFT(32) - The amount of pixels the scoreboard shift vertically for each extra player when the team sizes aren't equal
+	
