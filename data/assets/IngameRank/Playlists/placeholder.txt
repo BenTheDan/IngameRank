@@ -1,8 +1,0 @@
-0.png //1v1
-2.png //2v2
-2.png //3v3
-3.png //hoops
-4.png //rumble
-5.png //dropshot
-6.png //snowday
-7.png //tournament
