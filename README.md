@@ -11,10 +11,10 @@ If you want to make a plugin appending the scoreboard in any way, you can find i
 I'm no longer working on this project actively, but if you'd like to make your own changes, I'll be happy to review them and update the plugin.
 
 ## Known Issues
-**Start of match sorting**
+**Start of match sorting**  
 At the beginning of the match ranks might be next to the wrong players. This is because we don't know exactly how Rocket League sorts players when they all have 0 points. The issue is corrected once players start earning points.
 
-**Joining players mess up scoreboard**
+**Joining players mess up scoreboard**  
 If a player joins or leaves while the scoreboard is open their ranks might get assigned to the wrong team and mess up the alignment. This is corrected once the scoreboard is closed and reopened.
 
 ## Patch history
