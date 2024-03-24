@@ -1,59 +1,94 @@
 #pragma once
-#pragma comment(lib, "pluginsdk.lib")
+
 #include "bakkesmod/plugin/bakkesmodplugin.h"
+#include "bakkesmod/plugin/pluginwindow.h"
+#include "bakkesmod/plugin/PluginSettingsWindow.h"
+
+#include "ScoreboardPosition.h"
 #include <filesystem>
 #include <chrono>
 #include <algorithm>
 
-#define SCOREBOARD_LEFT 537
-#define BLUE_BOTTOM 77
-#define ORANGE_TOP 32
-#define BANNER_DISTANCE 57
-#define IMAGE_WIDTH 150
-#define IMAGE_HEIGHT 100
-#define CENTER_X 960
-#define CENTER_Y 540
-#define SCOREBOARD_HEIGHT 548
-#define SCOREBOARD_WIDTH 1033
-#define IMBALANCE_SHIFT 32
-#define MUTATOR_SIZE 478
-#define SKIP_TICK_SHIFT 67
-
 //#define _DEBUG
 
-class IngameRank : public BakkesMod::Plugin::BakkesModPlugin
+#include "version.h"
+constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
+
+
+class IngameRank: public BakkesMod::Plugin::BakkesModPlugin
 {
 public:
 	std::shared_ptr<bool> pluginActive = std::make_shared<bool>(true);
-public:
-	virtual void onLoad();
-	virtual void onUnload();
 
+	struct SSParams {
+		uintptr_t PRI_A;
+		uintptr_t PRI_B;
+
+		// if hooking post
+		int32_t ReturnValue;
+	};
+
+	struct Pri {
+		UniqueIDWrapper uid;
+		int score{};
+		unsigned char team{};
+		bool isBot{};
+		std::string name;
+		OnlinePlatform platform;
+		bool ghost_player;
+
+		Pri() {}
+		Pri(PriWrapper p) {
+			if (!p) { return; }
+			uid = p.GetUniqueIdWrapper();
+			score = p.GetMatchScore();
+			team = p.GetTeamNum2();
+			isBot = p.GetbBot();
+			name = p.GetPlayerName().ToString();
+			platform = p.GetPlatform();
+			ghost_player = team > 1;
+		}
+	};
+
+
+public:
+	void onLoad() override;
+	void onUnload() override;
+
+	void ComputeScoreboardInfo();
+	void RecordScoreboardComparison(ActorWrapper gameEvent, void* params, std::string eventName);
 	void openScoreboard(std::string eventName);
 	void closeScoreboard(std::string eventName);
+	void updateDisplay();
 	void render(CanvasWrapper canvas);
 	void renderPlaylist(CanvasWrapper canvas);
-	void teamUpdate(std::string eventName);
+	void updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay = false);
 	void griDestroyed(std::string eventName);
+	void cyclePlaylist(std::vector<std::string> params);
 	std::unique_ptr<MMRNotifierToken> mmrToken;
-private:
-	std::shared_ptr<ImageWrapper> tiers[24];
-	std::shared_ptr<ImageWrapper> divisions[8];
-	std::shared_ptr<ImageWrapper> playlists[8];
 
-	float image_scale = 1.0f;
+private:
+
+	struct DisplayRank {
+		SkillRank skillRank;
+		int playlist;
+		bool isUnranked;
+		bool isSynced;
+	};
+
+	struct ComputedScoreboardInfo {
+		std::vector<Pri>sortedPlayers;
+		int bluePlayerCount{};
+		int orangePlayerCount{};
+	};
+
 	struct image {
 		std::shared_ptr<ImageWrapper> img;
 		Vector2 position;
 		float scale;
+		LinearColor color;
 	};
-	struct pri {
-		UniqueIDWrapper uid;
-		int score;
-		unsigned char team;
-		bool isBot;
-		std::string name;
-	};
+
 	struct PlaylistRank {
 		SkillRank skillrank;
 		int mmr;
@@ -65,31 +100,6 @@ private:
 		PlaylistRank ranks[9];
 	};
 
-	std::vector<pri> leaderboard;
-	std::unordered_map<std::string, int> mmrs;
-	int num_blues = 0;
-	int num_oranges = 0;
-
-	std::unordered_map<std::string, PRanks> player_ranks;
-
-	std::vector<image> toRender;
-	Vector2 rankFromMMR(float mmr, int playlist);
-	void updateScores(bool keepOrder = false);
-	void cyclePlaylist(std::vector<std::string> params);
-	void updateRankFor(UniqueIDWrapper uid);
-	bool compareName(int mmr1, std::string name1, int mmr2, std::string name2);
-	std::string to_lower(std::string s);
-	bool isSBOpen = false;
-	bool mutators = false;
-	bool isReplaying = false;
-	float uiScale = 1.0f;
-	Vector2 canvas_size;
-	float scale = 1.0f;
-
-	bool playlist_visible = false;
-	std::chrono::system_clock::time_point playlist_changed;
-	bool show_rank_on = false;
-
 	enum PLCondition {
 		NONE = 0,
 		EXTRAMODE = 1,
@@ -100,7 +110,31 @@ private:
 		int index;
 		char condition;
 	};
-	std::map<int, Playlist> playlist_names = {
+
+private:
+
+	std::shared_ptr<ImageWrapper> tiers[24];
+	std::shared_ptr<ImageWrapper> divisions[8];
+	std::shared_ptr<ImageWrapper> playlists[8];
+
+	int display_playlist = 0;
+
+	//std::unordered_map<std::string, int> mmrs;
+	std::unordered_map<std::string, PRanks> player_ranks;
+
+	std::vector<image> toRender;
+	bool isSBOpen = false;
+	bool mutators = false;
+	bool isReplaying = false;
+	float uiScale = 1.0f;
+	Vector2 canvas_size = Vector2{ 1920, 1080 }; // Default value for safety
+	SbPosInfo sbPosInfo = { Vector2F{0, 0}, Vector2F{0, 0}, BANNER_DISTANCE, 0.48, 0 }; // Default value just to be safe
+
+	std::chrono::system_clock::time_point playlist_changed;
+	bool show_rank_on = false;
+	
+	const std::map<int, Playlist> PLAYLIST_NAMES = {
+		{-1, {"Current", -2, PLCondition::NONE}},
 		{0, {"Best", -1, PLCondition::NONE}},
 		{10, {"Solo Duel", 0, PLCondition::NONE}},
 		{11, {"Doubles", 1, PLCondition::NONE}},
@@ -113,6 +147,38 @@ private:
 		{34, {"Tournaments", 7, PLCondition::TOURNAMENT}}
 	};
 
-	std::vector<int> excluded_playlists = { 6, 22 };
-};
+	// Private match and Custom tournament
+	const std::vector<int> EXCLUDED_PLAYLISTS = { 6, 22 };
 
+	// Members for scoreboard tracking logic.
+	std::vector<std::pair<Pri, Pri>> comparisons;
+	/**
+	 * teamHistory records the last team that a player (represented by the
+	 * string combining their name and uid) was seen on. This is necessary,
+	 * because during ScoreboardSort any disconnected players will have a team
+	 * number different from Blue or Orange, but we still need to know which team
+	 * they show up on in the scoreboard display.
+	 */
+	std::unordered_map<std::string, int> teamHistory;
+	ComputedScoreboardInfo computedInfo{};  // Derived from comparisons and teamHistory.
+	bool accumulateComparisons{};
+
+private:
+	// Decide which rank of a player to display and what that rank is
+	DisplayRank displayRankOf(Pri pri, bool include_extras, bool include_tournaments, bool calculate_unranked);
+
+	// Cache precomputed images of the ranks and their positions to be rendered
+	void precomputeRankImages(
+		Pri pri,
+		DisplayRank displayRank,
+		int oranges, int blues,
+		int playlist,
+		bool show_division, bool show_playlist, bool calculate_unranked
+	);
+
+	// Currently unused but might could be useful if initial scoreboard sorting is 
+	// alphabetic or something similar
+	// 
+	// static bool compareName(int mmr1, std::string name1, int mmr2, std::string name2);
+	// static std::string to_lower(std::string s);
+};
