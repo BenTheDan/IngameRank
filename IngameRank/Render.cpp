@@ -32,7 +32,7 @@ void IngameRank::precomputeRankImages(
 
 	// When the player is a ghost player the PriWrapper should have a different team number than what we have saved
 	// then the ghost players will have a dimmer rank shown for visual clarity
-	if (pri.ghost_player) color = LinearColor{ (char)150, (char)150, (char)150, (char)255 };
+	if (pri.ghost_player) color = LinearColor{ (char)200, (char)200, (char)200, (char)155 };
 	
 
 	// Add tier image to be rendered
@@ -61,7 +61,12 @@ void IngameRank::render(CanvasWrapper canvas) {
 	{
 		canvas.SetColor(img.color);
 		canvas.SetPosition(img.position);
-		canvas.DrawTexture(img.img.get(), img.scale);
+		if (img.img.get()->IsLoadedForCanvas()) {
+			canvas.DrawTexture(img.img.get(), img.scale);
+		}
+		else {
+			img.img.get()->LoadForCanvas();
+		}
 
 #ifdef _DEBUG
 		//Draws a box around the rendered images
@@ -85,6 +90,16 @@ void IngameRank::render(CanvasWrapper canvas) {
 		canvas.DrawString("Turn on \"Ranked->Show player MMR on scoreboard\" and \"Ranked->Show MMR in casual playlists\" in the bakkesmod menu!", 1.5f, 1.5f);
 	}
 
+#ifdef _DEBUG
+	int offset = 100;
+	for (auto id : sortednames) {
+		canvas.SetPosition(Vector2{10, offset});
+		canvas.DrawString(id, 2.0f, 2.0f);
+		offset += 25;
+	}
+#endif // _DEBUG
+
+
 	renderPlaylist(canvas);
 }
 
@@ -94,7 +109,7 @@ void IngameRank::renderPlaylist(CanvasWrapper canvas) {
 	int playlist = display_playlist;
 	std::string playlist_txt = "Playlist: " + PLAYLIST_NAMES.at(playlist).name;
 
-	if (!!cvarManager)
+	if (cvarManager)
 	{
 		CVarWrapper playlist_cvar = cvarManager->getCvar("ingamerank_playlist");
 		if (!playlist_cvar.IsNull())
@@ -121,7 +136,13 @@ void IngameRank::renderPlaylist(CanvasWrapper canvas) {
 	if (playlist > 0) {
 		// Draw playlist image
 		canvas.SetPosition(Vector2{ int(std::roundf(posX)), 10 });
-		canvas.DrawTexture(playlists[PLAYLIST_NAMES.at(playlist).index].get(), 0.5f * sbPosInfo.scale);
+		ImageWrapper* img = playlists[PLAYLIST_NAMES.at(playlist).index].get();
+		if (img->IsLoadedForCanvas()) {
+			canvas.DrawTexture(img, 0.5f * sbPosInfo.scale);
+		}
+		else {
+			img->LoadForCanvas();
+		}
 	}
 
 	// Draw text

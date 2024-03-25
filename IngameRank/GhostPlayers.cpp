@@ -7,12 +7,48 @@
 #include "IngameRank.h"
 #include <unordered_set>
 
+// Get the sorted ids list from the return value of "Function TAGame.GFxData_Scoreboard_TA.UpdateSortedPlayerIDs"
+void IngameRank::getSortedIds(ActorWrapper caller) {
+
+	auto* scoreboard = reinterpret_cast<ScoreboardObj*>(caller.memory_address);
+	if (scoreboard->sorted_names == nullptr) return;
+	auto sorted_names = std::wstring(scoreboard->sorted_names);
+
+	std::string str;
+	// Turn wstring into string so we can later use string.find
+	std::transform(sorted_names.begin(), sorted_names.end(), std::back_inserter(str), [](wchar_t c) {
+		return (char)c;
+		});
+	sortedIds = str;
+}
+
 std::string nameAndId(PriWrapper pri) {
     return pri.GetPlayerName().ToString() + "|" + pri.GetUniqueIdWrapper().GetIdString();
 }
 
 std::string nameAndId(const IngameRank::Pri& p) {
     return p.name + "|" + p.uid.GetIdString();
+}
+
+bool IngameRank::sortPris(Pri a, Pri b) {
+	std::string id_a = a.uid.GetIdString();
+	std::string id_b = b.uid.GetIdString();
+
+	// Bots have their id in sortedIds in the format of Bot_Name
+	if (a.isBot) id_a = "Bot_" + a.name;
+	if (b.isBot) id_b = "Bot_" + b.name;
+
+	// Use the sorted ids string to find out which pri is higher on the scoreboard
+	// Needed when the players all have a score of 0
+	size_t index_a = sortedIds.find(id_a);
+	size_t index_b = sortedIds.find(id_b);
+	if (index_a != std::string::npos && index_b != std::string::npos) {
+		return index_a < index_b;
+	}
+	// Fallback mechanism if sorted ids doesn't contain the ids
+	else {
+		return a.score > b.score;
+	}
 }
 
 void IngameRank::ComputeScoreboardInfo() {
@@ -46,8 +82,9 @@ void IngameRank::ComputeScoreboardInfo() {
 		seenPrisVector.push_back(pri);
 	}
 
-	std::sort(seenPrisVector.begin(), seenPrisVector.end(), [](const Pri& a, const Pri& b) { return a.score > b.score; });
+	std::sort(seenPrisVector.begin(), seenPrisVector.end(), [this](const Pri& a, const Pri& b) { return sortPris(a, b); });
 	computedInfo = ComputedScoreboardInfo{ seenPrisVector, numBlues, numOranges };
+	updateDisplay();
 }
 
 void IngameRank::RecordScoreboardComparison(ActorWrapper gameEvent, void* params, std::string eventName) {

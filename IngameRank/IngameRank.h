@@ -20,6 +20,12 @@ class IngameRank: public BakkesMod::Plugin::BakkesModPlugin
 public:
 	std::shared_ptr<bool> pluginActive = std::make_shared<bool>(true);
 
+	struct ScoreboardObj
+	{
+		unsigned char pad[0xB0];
+		wchar_t* sorted_names;
+	};
+
 	struct SSParams {
 		uintptr_t PRI_A;
 		uintptr_t PRI_B;
@@ -65,6 +71,7 @@ public:
 	void updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay = false);
 	void griDestroyed(std::string eventName);
 	void cyclePlaylist(std::vector<std::string> params);
+	void getSortedIds(ActorWrapper caller);
 	std::unique_ptr<MMRNotifierToken> mmrToken;
 
 private:
@@ -150,6 +157,7 @@ private:
 	// Private match and Custom tournament
 	const std::vector<int> EXCLUDED_PLAYLISTS = { 6, 22 };
 
+	std::string sortedIds = "";
 	// Members for scoreboard tracking logic.
 	std::vector<std::pair<Pri, Pri>> comparisons;
 	/**
@@ -160,10 +168,15 @@ private:
 	 * they show up on in the scoreboard display.
 	 */
 	std::unordered_map<std::string, int> teamHistory;
-	ComputedScoreboardInfo computedInfo{};  // Derived from comparisons and teamHistory.
+	ComputedScoreboardInfo computedInfo = { std::vector<Pri>(), 0, 0};  // Derived from comparisons and teamHistory.
 	bool accumulateComparisons{};
+#ifdef _DEBUG
+	std::vector<std::string> sortednames;
+#endif // _DEBUG
+
 
 private:
+	bool sortPris(Pri a, Pri b);
 	// Decide which rank of a player to display and what that rank is
 	DisplayRank displayRankOf(Pri pri, bool include_extras, bool include_tournaments, bool calculate_unranked);
 
