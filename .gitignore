@@ -5,7 +5,7 @@
 
 # BakkesMod build directory
 plugins/*
-!plugins/IngameRank.set
+!plugins/settings/IngameRank.set
 
 # User-specific files
 *.rsuser
