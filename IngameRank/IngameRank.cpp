@@ -105,6 +105,7 @@ void IngameRank::onLoad() {
 	gameWrapper->HookEventWithCallerPost<ActorWrapper>("Function TAGame.GFxData_Scoreboard_TA.UpdateSortedPlayerIDs", [this](ActorWrapper caller, ...)
 		{
 			getSortedIds(caller);
+			ComputeScoreboardInfo();
 		});
 	gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnOpenScoreboard", std::bind(&IngameRank::openScoreboard, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnCloseScoreboard", std::bind(&IngameRank::closeScoreboard, this, std::placeholders::_1));
