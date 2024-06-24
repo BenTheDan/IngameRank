@@ -13,6 +13,10 @@ I'm no longer working on this project actively, but if you'd like to make your o
 
 ## Patch history
 
+**v1.2.2**
+
+ - *Fixed* slight misalignment caused by an update
+
 **v1.2.1**
 
  - *Fixed* players not being sorted correctly at the start of the match

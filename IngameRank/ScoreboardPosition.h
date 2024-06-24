@@ -4,7 +4,7 @@
 
 #define SCOREBOARD_LEFT 537
 #define BLUE_BOTTOM 77
-#define ORANGE_TOP 32
+#define ORANGE_TOP 41
 #define BANNER_DISTANCE 57
 #define IMAGE_WIDTH 150
 #define IMAGE_HEIGHT 100
@@ -15,7 +15,7 @@
 #define IMBALANCE_SHIFT 32
 #define MUTATOR_SIZE 478
 #define SKIP_TICK_SHIFT 67
-#define Y_OFFCENTER_OFFSET 42
+#define Y_OFFCENTER_OFFSET 32
 #define IMAGE_SCALE 0.48f
 
 // Scoreboard Position Info: 
