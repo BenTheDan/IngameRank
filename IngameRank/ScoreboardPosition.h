@@ -3,7 +3,7 @@
 #include "bakkesmod/wrappers/wrapperstructs.h"
 
 #define SCOREBOARD_LEFT 537
-#define BLUE_BOTTOM 77
+#define BLUE_BOTTOM 67
 #define ORANGE_TOP 43
 #define BANNER_DISTANCE 57
 #define IMAGE_WIDTH 150
