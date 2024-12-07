@@ -2,7 +2,6 @@
 #include "IngameRank.h"
 
 #include <unordered_set>
-#include "ScoreboardPosition.h"
 
 
 BAKKESMOD_PLUGIN(IngameRank, "IngameRank", plugin_version, PLUGINTYPE_FREEPLAY)
@@ -22,6 +21,14 @@ void IngameRank::onLoad() {
 	cvarManager->registerCvar("ingamerank_calculate_unranked", "1", "Calculate unranked ranks based on mmr", false, true, 0.0f, true, 1.0f, true);
 	cvarManager->registerNotifier("ingamerank_cycleplaylist", std::bind(&IngameRank::cyclePlaylist, this, std::placeholders::_1), "Cycles the playlist", PERMISSION_ALL);
 
+	CurlRequest SBO_CRL;
+	SBO_CRL.url = "https://raw.githubusercontent.com/SoulDaMeep/PlatformDisplay/refs/heads/master/ScoreboardLookUp.txt";
+	HttpWrapper::SendCurlRequest(SBO_CRL, [=](int code, std::string result)
+		{
+			if (code != 200) return;
+			ScoreboardPos = ParseScoreboardOffsets(result);
+			LOG("Parsed Offsets: SCOREBOARD_LEFT = {}, BLUE_BOTTOM = {}", ScoreboardPos.SCOREBOARD_LEFT, ScoreboardPos.BLUE_BOTTOM);
+		});
 
 	// Handle the change of the playlist selection
 	cvarManager->getCvar("ingamerank_playlist").addOnValueChanged([this](std::string old, CVarWrapper cvar) {
@@ -45,7 +52,7 @@ void IngameRank::onLoad() {
 			playlist_changed = std::chrono::system_clock::now();
 			uiScale = gameWrapper->GetInterfaceScale() * gameWrapper->GetDisplayScale();
 			canvas_size = gameWrapper->GetScreenSize();
-			sbPosInfo.scale = getSbPosInfo(canvas_size, uiScale, false, 0, 0, false).scale;	// Compute scaling factor if not already done by updateDisplay()
+			sbPosInfo.scale = getSbPosInfo(canvas_size, uiScale, false, 0, 0, false, ScoreboardPos).scale;	// Compute scaling factor if not already done by updateDisplay()
 			gameWrapper->RegisterDrawable(std::bind(&IngameRank::renderPlaylist, this, std::placeholders::_1));
 		}
 
@@ -263,7 +270,7 @@ void IngameRank::updateDisplay() {
 	canvas_size = gameWrapper->GetScreenSize();
 	uiScale = gameWrapper->GetInterfaceScale() * gameWrapper->GetDisplayScale();
 	mutators = mmrWrapper.GetCurrentPlaylist() == 34; // When playing a tournament
-	sbPosInfo = getSbPosInfo(canvas_size, uiScale, mutators, computedInfo.bluePlayerCount, computedInfo.orangePlayerCount, isReplaying);
+	sbPosInfo = getSbPosInfo(canvas_size, uiScale, mutators, computedInfo.bluePlayerCount, computedInfo.orangePlayerCount, isReplaying, ScoreboardPos);
 
 	//Get cvars
 	int playlist = display_playlist;

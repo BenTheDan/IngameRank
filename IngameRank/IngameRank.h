@@ -136,6 +136,7 @@ private:
 	float uiScale = 1.0f;
 	Vector2 canvas_size = Vector2{ 1920, 1080 }; // Default value for safety
 	SbPosInfo sbPosInfo = { Vector2F{0, 0}, Vector2F{0, 0}, BANNER_DISTANCE, 0.48, 0 }; // Default value just to be safe
+	ScoreboardOffsets ScoreboardPos;
 
 	std::chrono::system_clock::time_point playlist_changed;
 	bool show_rank_on = false;

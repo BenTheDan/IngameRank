@@ -99,6 +99,7 @@
     <ClCompile Include="IngameRank.cpp" />
     <ClCompile Include="Rankings.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="ScoreboardPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logging.h" />

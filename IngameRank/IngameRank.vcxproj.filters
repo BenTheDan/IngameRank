@@ -42,6 +42,9 @@
     <ClCompile Include="GhostPlayers.cpp">
       <Filter>Plugin\src</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreboardPosition.cpp">
+      <Filter>Plugin\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="version.h">
