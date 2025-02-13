@@ -56,15 +56,23 @@ void IngameRank::updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay) {
 		int mmr;
 
 		if (isSynced) {
-			sr = mmrWrapper.GetPlayerRank(uid, pid.first);
-			mmr = mmrWrapper.GetPlayerMMR(uid, pid.first);
+			//sr = mmrWrapper.GetPlayerRank(uid, pid.first);
+			//mmr = mmrWrapper.GetPlayerMMR(uid, pid.first);
+			sr = SkillRank{
+				0,
+				0,
+				0
+			};
+			mmr = 600;
 
 			if (sr.Tier == 0) {
 				isUnranked = true;
-				Vector2 calculated = rankFromMMR(mmr, pid.first);
-				if (calculated.X > -1) {
-					sr.Tier = calculated.X;
-					sr.Division = calculated.Y;
+				if (mmr != 600 || sr.MatchesPlayed > 0) { // Apparently if someone never ever played a playlist 600 (gold 3) is returned for the mmr so we don't want that
+					Vector2 calculated = rankFromMMR(mmr, pid.first);
+					if (calculated.X > -1) {
+						sr.Tier = calculated.X;
+						sr.Division = calculated.Y;
+					}
 				}
 			}
 		}
@@ -82,6 +90,13 @@ void IngameRank::updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay) {
 		};
 	}
 	player_ranks[uid.GetIdString()] = pRanks;
+
+#ifdef _DEBUG
+	LOG("IngameRank rankUpdate for " + uid.GetIdString());
+	for (auto rank : pRanks.ranks) {
+		LOG(std::to_string(rank.playlist_id) + " " + std::to_string(rank.isSynced) + " " + std::to_string(rank.isUnranked) + " " + std::to_string(rank.mmr) + " " + std::to_string(rank.skillrank.Tier) + " " + std::to_string(rank.skillrank.Division) + " " + std::to_string(rank.skillrank.MatchesPlayed));
+	}
+#endif
 
 	// Only update display when called from the mmrNotifier in order to avoid recursive function calls
 	if (callUpdateDisplay) updateDisplay();

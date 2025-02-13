@@ -48,7 +48,10 @@ void IngameRank::precomputeRankImages(
 		}
 	}
 	// Add playlist image to be rendered
-	if (show_playlist && playlist == 0 && displayRank.isSynced) {
+	if (show_playlist							// Show playlist enabled in settings
+		&& playlist == 0						// selected playlist is "Best"
+		&& displayRank.isSynced					// rank is synced
+		&& displayRank.skillRank.Tier > 0) {	// If the best is unranked, don't show the playlist
 		if (PLAYLIST_NAMES.at(displayRank.playlist).index >= 0) // Make sure it's valid so again we don't crash
 		toRender.push_back(image{ playlists[PLAYLIST_NAMES.at(displayRank.playlist).index], Vector2{int(std::roundf(X - 100.0f * sbPosInfo.scale * IMAGE_SCALE)), int(std::roundf(Y))}, sbPosInfo.scale * IMAGE_SCALE, color });
 	}
