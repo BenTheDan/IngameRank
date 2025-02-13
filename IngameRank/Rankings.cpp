@@ -56,14 +56,8 @@ void IngameRank::updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay) {
 		int mmr;
 
 		if (isSynced) {
-			//sr = mmrWrapper.GetPlayerRank(uid, pid.first);
-			//mmr = mmrWrapper.GetPlayerMMR(uid, pid.first);
-			sr = SkillRank{
-				0,
-				0,
-				0
-			};
-			mmr = 600;
+			sr = mmrWrapper.GetPlayerRank(uid, pid.first);
+			mmr = mmrWrapper.GetPlayerMMR(uid, pid.first);
 
 			if (sr.Tier == 0) {
 				isUnranked = true;
