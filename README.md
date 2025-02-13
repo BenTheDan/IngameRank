@@ -13,6 +13,14 @@ I'm no longer working on this project actively, but if you'd like to make your o
 
 ## Patch history
 
+**v1.2.4**
+
+ - *Fixed* players showing as "gold 3" if they never played the playlist
+
+**v1.2.3**
+
+ - Misalignments can now be corrected without updating the plugin
+
 **v1.2.2**
 
  - *Fixed* slight misalignment caused by an update
