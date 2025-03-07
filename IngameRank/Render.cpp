@@ -88,9 +88,21 @@ void IngameRank::render(CanvasWrapper canvas) {
 
 	if (!show_rank_on) {
 		// If show player mmr is disabled in bakkesmod settings notify the player with a red message
+		const std::string message = "\"Ranked > Show player MMR on scoreboard\" and \"Ranked > Show MMR in casual playlists\"";
+		const std::string message2 = "in the bakkesmod menu (F2) Ranked tab must be turned on for IngameRank to work!";
+		const float message_size = 2.f;
+		
+		canvas.SetColor(0, 0, 0, 224);
+		Vector2F string_size = canvas.GetStringSize(message, message_size, message_size);
+		Vector2F string_size2 = canvas.GetStringSize(message, message_size, message_size);
+		canvas.DrawRect(Vector2F{ 0, 0 }, Vector2F{ 6, 6 } + string_size);
+		canvas.DrawRect(Vector2F{ 0, 6 + string_size.Y }, Vector2F{ 6, 6 + string_size.Y } + string_size2);
+
 		canvas.SetColor(255, 0, 0, 255);
-		canvas.SetPosition(Vector2{ 0, 0 });
-		canvas.DrawString("Turn on \"Ranked->Show player MMR on scoreboard\" and \"Ranked->Show MMR in casual playlists\" in the bakkesmod menu!", 1.5f, 1.5f);
+		canvas.SetPosition(Vector2F{ 3, 3 });
+		canvas.DrawString(message, message_size, message_size, true, false);
+		canvas.SetPosition(Vector2F{ 3, 6 + string_size.Y });
+		canvas.DrawString(message2, message_size, message_size, true, false);
 	}
 
 #ifdef _DEBUG

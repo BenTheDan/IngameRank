@@ -153,6 +153,10 @@ void IngameRank::onLoad() {
 				display_playlist = playlist_cvar.getIntValue();
 			}
 		}
+
+		if (!cvarManager->getCvar("ranked_showranks").getBoolValue() || !cvarManager->getCvar("ranked_showranks_casual").getBoolValue()) {
+			gameWrapper->LogToChatbox("Turn on \"Ranked > Show player MMR on scoreboard\" and \"Ranked > Show MMR in casual playlists\" in the bakkesmod menu!", "IngameRank");
+		}
 		});
 
 	gameWrapper->HookEvent("Function ReplayDirector_TA.Playing.EndState", [this](std::string eventName) {
