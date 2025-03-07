@@ -13,6 +13,10 @@ I'm no longer working on this project actively, but if you'd like to make your o
 
 ## Patch history
 
+**v1.2.5**
+
+ - *Improved* wording and visibility of warning to turn on "show mmr" in options
+
 **v1.2.4**
 
  - *Fixed* players showing as "gold 3" if they never played the playlist
