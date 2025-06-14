@@ -18,6 +18,7 @@ constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_M
 class IngameRank: public BakkesMod::Plugin::BakkesModPlugin
 {
 public:
+	OnlinePlatform currentPlatform = OnlinePlatform_Unknown; // Added to store current platform
 	std::shared_ptr<bool> pluginActive = std::make_shared<bool>(true);
 
 	struct ScoreboardObj
@@ -140,7 +141,7 @@ private:
 
 	std::chrono::system_clock::time_point playlist_changed;
 	bool show_rank_on = false;
-	
+
 	const std::map<int, Playlist> PLAYLIST_NAMES = {
 		{-1, {"Current", -2, PLCondition::NONE}},
 		{0, {"Best", -1, PLCondition::NONE}},
@@ -190,9 +191,9 @@ private:
 		bool show_division, bool show_playlist, bool calculate_unranked
 	);
 
-	// Currently unused but might could be useful if initial scoreboard sorting is 
+	// Currently unused but might could be useful if initial scoreboard sorting is
 	// alphabetic or something similar
-	// 
+	//
 	// static bool compareName(int mmr1, std::string name1, int mmr2, std::string name2);
 	// static std::string to_lower(std::string s);
 };
