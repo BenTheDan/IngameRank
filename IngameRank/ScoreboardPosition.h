@@ -20,7 +20,7 @@
 //#define Y_OFFCENTER_OFFSET 32
 #define IMAGE_SCALE 0.48f
 
-// Scoreboard Position Info: 
+// Scoreboard Position Info:
 struct SbPosInfo {
 	Vector2F blueLeaderPos;  // position of the first image for the top blue player
 	Vector2F orangeLeaderPos;
@@ -46,7 +46,8 @@ struct ScoreboardOffsets {
 	int Y_OFFCENTER_OFFSET = 32;
 };
 
-SbPosInfo getSbPosInfo(Vector2 canvas_size, float uiScale, bool mutators, int numBlues, int numOranges, bool isReplaying, ScoreboardOffsets sbo);
+// Modified function signature to include platform
+SbPosInfo getSbPosInfo(Vector2 canvas_size, float uiScale, bool mutators, int numBlues, int numOranges, bool isReplaying, ScoreboardOffsets sbo, OnlinePlatform platform);
 
 ScoreboardOffsets ParseScoreboardOffsets(const std::string& content);
 
