@@ -5,7 +5,7 @@ Ingame Rank
 8
 9|Playlist
 7
-6||ingamerank_playlist|Current@-1&Best@0&Solo Duel@10&Doubles@11&Standard@13&Rumble@28&Hoops@27&Dropshot@29&Snow Day@30&Tournaments@34
+6||ingamerank_playlist|Current@-1&Best@0&Solo Duel@10&Doubles@11&Standard@13&Quads@61&Hoops@27&Rumble@28&Dropshot@29&Snow Day@30&Heatseeker@63&Tournaments@34
 1|Include Extra Modes|ingamerank_include_extramodes
 1|Include Tournaments|ingamerank_include_tournaments
 1|Calculate Unranked Ranks (only Solo, Doubles and Standard)|ingamerank_calculate_unranked

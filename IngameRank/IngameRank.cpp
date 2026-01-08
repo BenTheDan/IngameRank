@@ -194,7 +194,7 @@ void IngameRank::onLoad() {
 	dataFolder = dataFolder / "assets" / "IngameRank";
 	for (size_t i = 0; i < 24; i++) tiers[i] = std::make_shared<ImageWrapper>(dataFolder / "Tiers" / (std::to_string(i) + ".png"), true);
 	for (size_t i = 0; i < 8; i++) divisions[i] = std::make_shared<ImageWrapper>(dataFolder / "Divisions" / (std::to_string(i) + ".png"), true);
-	for (size_t i = 0; i < 8; i++) playlists[i] = std::make_shared<ImageWrapper>(dataFolder / "Playlists" / (std::to_string(i) + ".png"), true);
+	for (size_t i = 0; i < 10; i++) playlists[i] = std::make_shared<ImageWrapper>(dataFolder / "Playlists" / (std::to_string(i) + ".png"), true);
 
 	//First launch condition
 	if (std::filesystem::exists(dataFolder / "FIRST_LAUNCH.file")) {
@@ -331,19 +331,19 @@ void IngameRank::cyclePlaylist(std::vector<std::string> params) {
 	bool extramodes = cvarManager->getCvar("ingamerank_include_extramodes").getBoolValue();
 	bool tournaments = cvarManager->getCvar("ingamerank_include_tournaments").getBoolValue();
 
-	int newPlaylist = playlist;
-	int playlist_index = PLAYLIST_NAMES.at(playlist).index;
-	for (auto& pid : PLAYLIST_NAMES)
-	{
-		if (pid.second.index > playlist_index) {
-			if (!(pid.second.condition == PLCondition::EXTRAMODE && !extramodes || pid.second.condition == PLCondition::TOURNAMENT && !tournaments))
-			{
-				newPlaylist = pid.first;
-				break;
-			}
+	int newPlaylist = -1;
+	auto p = PLAYLIST_ORDER.begin();
+	do {
+		if (*p == playlist) {
+			for (p++; p != PLAYLIST_ORDER.end() and
+				((PLAYLIST_NAMES.at(*p).condition == PLCondition::EXTRAMODE and !extramodes)
+					or (PLAYLIST_NAMES.at(*p).condition == PLCondition::TOURNAMENT and !tournaments));
+				p++);
+			if (p == PLAYLIST_ORDER.end()) p = PLAYLIST_ORDER.begin();
+			newPlaylist = *p;
+			break;
 		}
-	}
-	if (newPlaylist == playlist) newPlaylist = -1;
+	} while (++p != PLAYLIST_ORDER.end());
 
 	cvarManager->getCvar("ingamerank_playlist").setValue(newPlaylist);
 }

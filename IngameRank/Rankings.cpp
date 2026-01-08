@@ -87,8 +87,8 @@ void IngameRank::updateRankFor(UniqueIDWrapper uid, bool callUpdateDisplay) {
 
 #ifdef _DEBUG
 	LOG("IngameRank rankUpdate for " + uid.GetIdString());
-	for (auto rank : pRanks.ranks) {
-		LOG(std::to_string(rank.playlist_id) + " " + std::to_string(rank.isSynced) + " " + std::to_string(rank.isUnranked) + " " + std::to_string(rank.mmr) + " " + std::to_string(rank.skillrank.Tier) + " " + std::to_string(rank.skillrank.Division) + " " + std::to_string(rank.skillrank.MatchesPlayed));
+	for (auto& rank : pRanks.ranks) {
+		LOG(std::to_string(rank.second.playlist_id) + " " + std::to_string(rank.second.isSynced) + " " + std::to_string(rank.second.isUnranked) + " " + std::to_string(rank.second.mmr) + " " + std::to_string(rank.second.skillrank.Tier) + " " + std::to_string(rank.second.skillrank.Division) + " " + std::to_string(rank.second.skillrank.MatchesPlayed));
 	}
 #endif
 

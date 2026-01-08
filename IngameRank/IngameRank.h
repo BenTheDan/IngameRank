@@ -104,7 +104,7 @@ private:
 		bool isSynced;
 	};
 	struct PRanks {
-		PlaylistRank ranks[9];
+		std::map<int, PlaylistRank> ranks;
 	};
 
 	enum PLCondition {
@@ -122,7 +122,7 @@ private:
 
 	std::shared_ptr<ImageWrapper> tiers[24];
 	std::shared_ptr<ImageWrapper> divisions[8];
-	std::shared_ptr<ImageWrapper> playlists[8];
+	std::shared_ptr<ImageWrapper> playlists[10];
 
 	int display_playlist = 0;
 
@@ -148,12 +148,16 @@ private:
 		{11, {"Doubles", 1, PLCondition::NONE}},
 		//{12, {"Solo Standard", 2, PLCondition::NONE}},
 		{13, {"Standard", 2, PLCondition::NONE}},
+		{61, {"Quads", 8, PLCondition::NONE}},
 		{27, {"Hoops", 3, PLCondition::EXTRAMODE}},
 		{28, {"Rumble", 4, PLCondition::EXTRAMODE}},
 		{29, {"Dropshot", 5, PLCondition::EXTRAMODE}},
 		{30, {"Snow Day", 6, PLCondition::EXTRAMODE}},
-		{34, {"Tournaments", 7, PLCondition::TOURNAMENT}}
+		{63, {"Heatseeker", 9, PLCondition::EXTRAMODE}},
+		{34, {"Tournaments", 7, PLCondition::TOURNAMENT}},
 	};
+
+	const std::vector<int> PLAYLIST_ORDER = { -1, 0, 10, 11, 13, 61, 27, 28, 29, 30, 63, 34 };
 
 	// Private match and Custom tournament
 	const std::vector<int> EXCLUDED_PLAYLISTS = { 6, 22 };
