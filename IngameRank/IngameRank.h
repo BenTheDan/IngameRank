@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GuiBase.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
@@ -16,6 +17,7 @@ constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_M
 
 
 class IngameRank: public BakkesMod::Plugin::BakkesModPlugin
+	, public SettingsWindowBase
 {
 public:
 	std::shared_ptr<bool> pluginActive = std::make_shared<bool>(true);
@@ -60,6 +62,8 @@ public:
 public:
 	void onLoad() override;
 	void onUnload() override;
+
+	void RenderSettings() override;
 
 	void ComputeScoreboardInfo();
 	void RecordScoreboardComparison(ActorWrapper gameEvent, void* params, std::string eventName);
