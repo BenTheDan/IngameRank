@@ -1,3 +1,6 @@
+**After the Season 22 update with EAC introduced to Rocket League, this plugin will no longer be usable, so I'm archiving the project.**
+*see more on the plugin page*
+
 
 # IngameRank
 Bakkesmod plugin to show ranks in-game.
@@ -41,4 +44,5 @@ I'm no longer working on this project actively, but if you'd like to make your o
  - *Added* "Current" to the playlist selection
  - *Removed* "Auto playlist" option
  - *Updated* textures of playlists, tiers and divisions; new textures by Dooey123
+
 
